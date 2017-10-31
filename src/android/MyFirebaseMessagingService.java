@@ -76,10 +76,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
-
+        if(data.containsKey("main_picture")){ 
+            Bitmap bitmap = getBitmapFromURL(data.get("main_picture"));
+            if(bitmap!=null){
+                notificationBuilder.setLargeIcon();        
+            }   
+        }
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
+    
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
+private Bitmap getBitmapFromURL(String strURL) {
+    try {
+        URL url = new URL(strURL);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
+        connection.connect();
+        InputStream input = connection.getInputStream();
+        Bitmap myBitmap = BitmapFactory.decodeStream(input);
+        return myBitmap;
+    } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
+
+
 }
